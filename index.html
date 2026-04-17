@@ -495,6 +495,38 @@
                 </div>
                 <button class="btn-reset" onclick="resetSarana()">Reset</button>
             </div>
+            <!-- 9. Early Warning System -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">⛪</div>
+                    <div class="card-title">
+                        <h3>9. Pelaksanaan EWS</h3>
+                        <div class="subtitle">KUA yang menyelenggarakan EWS</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">
+                    <div class="formula">(a / b) × 100</div>
+                    <div class="keterangan">
+                        <strong>a:</strong> Jumlah KUA yang aktif menyelenggarakan Early Warning System (EWS)<br>
+                        <strong>b:</strong> Jumlah total KUA secara nasional
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>a = Jumlah KUA yang aktif menyelenggarakan Early Warning System (EWS)</label>
+                    <input type="number" id="KUA-a" placeholder="Masukkan nilai a" oninput="hitungKUA()">
+                </div>
+                <div class="input-group">
+                    <label>b = Jumlah total KUA secara nasional</label>
+                    <input type="number" id="KUA-b" placeholder="Masukkan nilai b" oninput="hitungKUA()">
+                </div>
+
+                <div class="hasil-box" id="KUA-hasil">
+                    <div class="hasil-label">Hasil Persentase</div>
+                    <div class="hasil-value">0<span class="hasil-satuan">%</span></div>
+                </div>
+                <button class="btn-reset" onclick="resetKUA()">Reset</button>
         </div>
 
         <div class="footer">
@@ -662,6 +694,23 @@
             document.getElementById('sarana-a').value = '';
             document.getElementById('sarana-b').value = '';
             hitungSarana();
+        }
+        // 9. KUA
+        function hitungKUA() {
+            const a = parseFloat(document.getElementById('KUA-a').value) || 0;
+            const b = parseFloat(document.getElementById('sKUA-b').value) || 0;
+            let hasil = 0;
+            if (b > 0) {
+                hasil = (a / b) * 100;
+            }
+            document.querySelector('#KUA-hasil .hasil-value').innerHTML = formatNumber(hasil) + '<span class="hasil-satuan">%</span>';
+            updateColor('sarana-hasil', hasil);
+        }
+
+        function resetSarana() {
+            document.getElementById('KUA-a').value = '';
+            document.getElementById('KUA-b').value = '';
+            hitungKUA();
         }
 
         // Fungsi update warna berdasarkan nilai
