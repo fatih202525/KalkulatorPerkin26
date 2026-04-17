@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Indikator KUA Pulau Gorom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #2a5298;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+            margin-right: 15px;
+        }
+
+        .card-title {
+            flex: 1;
+        }
+
+        .card-title h3 {
+            color: #2c3e50;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .card-title .subtitle {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+
+        .formula-box {
+            background: #f8f9fa;
+            border-left: 4px solid #2a5298;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .formula {
+            font-size: 1.3em;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .keterangan {
+            font-size: 0.85em;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .input-group {
+            margin: 15px 0;
+        }
+
+        .input-group label {
+            display: block;
+            color: #34495e;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .hasil-box {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .hasil-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .hasil-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hasil-satuan {
+            font-size: 1.2em;
+            margin-left: 5px;
+        }
+
+        .btn-reset {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-reset:hover {
+            background: #c0392b;
+        }
+
+        .special-formula {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            padding: 20px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Kalkulator Indikator KUA</h1>
+            <p>Kantor Urusan Agama Pulau Gorom - Kementerian Agama RI</p>
+            <p>Sistem Perhitungan Indikator Kinerja Tahun 2026</p>
+        </div>
+
+        <div class="grid">
+            <!-- 1. Bimwin -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">💑</div>
+                    <div class="card-title">
+                        <h3>1. Bimwin</h3>
+                        <div class="subtitle">Bimbingan Wali Nikah</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">
+                    <div class="formula">(a / b) × 100</div>
+                    <div class="keterangan">
+                        <strong>a:</strong> Jumlah pasangan calon pengantin yang mendapat Bimwin<br>
+                        <strong>b:</strong> Total jumlah pasangan calon yang mendaftar & wajib Bimwin
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>a = Jumlah pasangan mendapat Bimwin</label>
+                    <input type="number" id="bimwin-a" placeholder="Masukkan nilai a" oninput="hitungBimwin()">
+                </div>
+                <div class="input-group">
+                    <label>b = Total pasangan wajib Bimwin</label>
+                    <input type="number" id="bimwin-b" placeholder="Masukkan nilai b" oninput="hitungBimwin()">
+                </div>
+
+                <div class="hasil-box" id="bimwin-hasil">
+                    <div class="hasil-label">Hasil Persentase</div>
+                    <div class="hasil-value">0<span class="hasil-satuan">%</span></div>
+                </div>
+                <button class="btn-reset" onclick="resetBimwin()">Reset</button>
+            </div>
+
+            <!-- 2. Bimbingan Keluarga Sakinah -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">🏠</div>
+                    <div class="card-title">
+                        <h3>2. Bimbingan Keluarga Sakinah</h3>
+                        <div class="subtitle">Program Pembinaan Keluarga</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">
+                    <div class="formula">(a / b) × 100</div>
+                    <div class="keterangan">
+                        <strong>a:</strong> Jumlah rumah tangga yang mendapat bimbingan Keluarga Sakinah<br>
+                        <strong>b:</strong> Total jumlah rumah tangga target bimbingan
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>a = Jumlah rumah tangga terbimbing</label>
+                    <input type="number" id="sakinah-a" placeholder="Masukkan nilai a" oninput="hitungSakinah()">
+                </div>
+                <div class="input-group">
+                    <label>b = Total target rumah tangga</label>
+                    <input type="number" id="sakinah-b" placeholder="Masukkan nilai b" oninput="hitungSakinah()">
+                </div>
+
+                <div class="hasil-box" id="sakinah-hasil">
+                    <div class="hasil-label">Hasil Persentase</div>
+                    <div class="hasil-value">0<span class="hasil-satuan">%</span></div>
+                </div>
+                <button class="btn-reset" onclick="resetSakinah()">Reset</button>
+            </div>
+
+            <!-- 3. Bimbingan Pra Nikah (BRUS) -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">📚</div>
+                    <div class="card-title">
+                        <h3>3. Bimbingan Pra Nikah (BRUS)</h3>
+                        <div class="subtitle">Bimbingan Remaja Usia Sekolah</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">
+                    <div class="formula">(a / b) × 100</div>
+                    <div class="keterangan">
+                        <strong>a:</strong> Jumlah remaja yang mendapat bimbingan Pra Nikah<br>
+                        <strong>b:</strong> Jumlah remaja usia 15-19 tahun di Kec. Wida Timur
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>a = Jumlah remaja terbimbing</label>
+                    <input type="number" id="brus-a" placeholder="Masukkan nilai a" oninput="hitungBrus()">
+                </div>
+                <div class="input-group">
+                    <label>b = Jumlah remaja usia 15-19 tahun</label>
+                    <input type="number" id="brus-b" placeholder="Masukkan nilai b" oninput="hitungBrus()">
+                </div>
+
+                <div class="hasil-box" id="brus-hasil">
+                    <div class="hasil-label">Hasil Persentase</div>
+                    <div class="hasil-value">0<span class="hasil-satuan">%</span></div>
+                </div>
+                <button class="btn-reset" onclick="resetBrus()">Reset</button>
+            </div>
+
+            <!-- 4. Penghulu Bersertifikat -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">📜</div>
+                    <div class="card-title">
+                        <h3>4. Penghulu Bersertifikat</h3>
+                        <div class="subtitle">Sertifikasi Kompetensi Penghulu</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">
+                    <div class="formula">(a / b) × 100</div>
+                    <div class="keterangan">
+                        <strong>a:</strong> Jumlah Penghulu yang bersertifikat kepenghuluan<br>
+                        <strong>b:</strong> Jumlah total Penghulu pada KUA
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>a = Jumlah penghulu bersertifikat</label>
+                    <input type="number" id="penghulu-a" placeholder="Masukkan nilai a" oninput="hitungPenghulu()">
+                </div>
+                <div class="input-group">
+                    <label>b = Total penghulu KUA</label>
+                    <input type="number" id="penghulu-b" placeholder="Masukkan nilai b" oninput="hitungPenghulu()">
+                </div>
+
+                <div class="hasil-box" id="penghulu-hasil">
+                    <div class="hasil-label">Hasil Persentase</div>
+                    <div class="hasil-value">0<span class="hasil-satuan">%</span></div>
+                </div>
+                <button class="btn-reset" onclick="resetPenghulu()">Reset</button>
+            </div>
+
+            <!-- 5. Akta Ikrar Wakaf -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">🕌</div>
+                    <div class="card-title">
+                        <h3>5. Akta Ikrar Wakaf</h3>
+                        <div class="subtitle">Legalitas Wakaf Masjid/Mushalla</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">
+                    <div class="formula">(a / b) × 100</div>
+                    <div class="keterangan">
+                        <strong>a:</strong> Jumlah akta ikrar wakaf yang diterbitkan<br>
+                        <strong>b:</strong> Jumlah semua masjid/mushalla di Kec. se-Kecamatan
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>a = Jumlah akta ikrar wakaf</label>
+                    <input type="number" id="wakaf-a" placeholder="Masukkan nilai a" oninput="hitungWakaf()">
+                </div>
+                <div class="input-group">
+                    <label>b = Total masjid/mushalla</label>
+                    <input type="number" id="wakaf-b" placeholder="Masukkan nilai b" oninput="hitungWakaf()">
+                </div>
+
+                <div class="hasil-box" id="wakaf-hasil">
+                    <div class="hasil-label">Hasil Persentase</div>
+                    <div class="hasil-value">0<span class="hasil-satuan">%</span></div>
+                </div>
+                <button class="btn-reset" onclick="resetWakaf()">Reset</button>
+            </div>
+
+            <!-- 6. Peristiwa Nikah (Pertumbuhan) -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">📈</div>
+                    <div class="card-title">
+                        <h3>6. Peristiwa Nikah</h3>
+                        <div class="subtitle">Pertumbuhan Peristiwa Nikah</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box special-formula">
+                    <div class="formula">((a - b) / b) × 100</div>
+                    <div class="keterangan">
+                        <strong>a:</strong> Jumlah peristiwa nikah tahun sekarang<br>
+                        <strong>b:</strong> Jumlah peristiwa nikah tahun sebelumnya<br>
+                        <em>*Rumus khusus: Pertumbuhan/penurunan dari tahun sebelumnya</em>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>a = Jumlah nikah tahun sekarang</label>
+                    <input type="number" id="nikah-a" placeholder="Masukkan nilai a" oninput="hitungNikah()">
+                </div>
+                <div class="input-group">
+                    <label>b = Jumlah nikah tahun sebelumnya</label>
+                    <input type="number" id="nikah-b" placeholder="Masukkan nilai b" oninput="hitungNikah()">
+                </div>
+
+                <div class="hasil-box" id="nikah-hasil">
+                    <div class="hasil-label">Hasil Pertumbuhan</div>
+                    <div class="hasil-value">0<span class="hasil-satuan">%</span></div>
+                </div>
+                <button class="btn-reset" onclick="resetNikah()">Reset</button>
+            </div>
+
+            <!-- 7. Penyuluh Agama Islam -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">🎓</div>
+                    <div class="card-title">
+                        <h3>7. Penyuluh Agama Islam</h3>
+                        <div class="subtitle">Kinerja Penyuluh (Kategori Baik)</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">
+                    <div class="formula">(a / b) × 100</div>
+                    <div class="keterangan">
+                        <strong>a:</strong> Penyuluh Agama Islam yang memperoleh nilai kategori Baik<br>
+                        <strong>b:</strong> Jumlah penyuluh Agama Islam di KUA
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>a = Jumlah penyuluh nilai Baik</label>
+                    <input type="number" id="penyuluh-a" placeholder="Masukkan nilai a" oninput="hitungPenyuluh()">
+                </div>
+                <div class="input-group">
+                    <label>b = Total penyuluh di KUA</label>
+                    <input type="number" id="penyuluh-b" placeholder="Masukkan nilai b" oninput="hitungPenyuluh()">
+                </div>
+
+                <div class="hasil-box" id="penyuluh-hasil">
+                    <div class="hasil-label">Hasil Persentase</div>
+                    <div class="hasil-value">0<span class="hasil-satuan">%</span></div>
+                </div>
+                <button class="btn-reset" onclick="resetPenyuluh()">Reset</button>
+            </div>
+
+            <!-- 8. Sarana Peribadatan -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="icon">⛪</div>
+                    <div class="card-title">
+                        <h3>8. Sarana Peribadatan</h3>
+                        <div class="subtitle">Standar Sarana & Prasarana</div>
+                    </div>
+                </div>
+                
+                <div class="formula-box">
+                    <div class="formula">(a / b) × 100</div>
+                    <div class="keterangan">
+                        <strong>a:</strong> Jumlah sarana & prasarana peribadatan yang memenuhi standar<br>
+                        <strong>b:</strong> Jumlah total sarana & prasarana yang diidentifikasi/dinilai
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>a = Jumlah sarana memenuhi standar</label>
+                    <input type="number" id="sarana-a" placeholder="Masukkan nilai a" oninput="hitungSarana()">
+                </div>
+                <div class="input-group">
+                    <label>b = Total sarana yang dinilai</label>
+                    <input type="number" id="sarana-b" placeholder="Masukkan nilai b" oninput="hitungSarana()">
+                </div>
+
+                <div class="hasil-box" id="sarana-hasil">
+                    <div class="hasil-label">Hasil Persentase</div>
+                    <div class="hasil-value">0<span class="hasil-satuan">%</span></div>
+                </div>
+                <button class="btn-reset" onclick="resetSarana()">Reset</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2026 KUA Pulau Gorom - Sistem Digitalisasi Indikator Kinerja</p>
+            <p>Dibuat berdasarkan rumus manual operasional KUA</p>
+        </div>
+    </div>
+
+    <script>
+        // Fungsi format angka
+        function formatNumber(num) {
+            return num.toLocaleString('id-ID', { maximumFractionDigits: 2 });
+        }
+
+        // 1. Bimwin
+        function hitungBimwin() {
+            const a = parseFloat(document.getElementById('bimwin-a').value) || 0;
+            const b = parseFloat(document.getElementById('bimwin-b').value) || 0;
+            let hasil = 0;
+            if (b > 0) {
+                hasil = (a / b) * 100;
+            }
+            document.querySelector('#bimwin-hasil .hasil-value').innerHTML = formatNumber(hasil) + '<span class="hasil-satuan">%</span>';
+            
+            // Ubah warna berdasarkan hasil
+            updateColor('bimwin-hasil', hasil);
+        }
+
+        function resetBimwin() {
+            document.getElementById('bimwin-a').value = '';
+            document.getElementById('bimwin-b').value = '';
+            hitungBimwin();
+        }
+
+        // 2. Bimbingan Keluarga Sakinah
+        function hitungSakinah() {
+            const a = parseFloat(document.getElementById('sakinah-a').value) || 0;
+            const b = parseFloat(document.getElementById('sakinah-b').value) || 0;
+            let hasil = 0;
+            if (b > 0) {
+                hasil = (a / b) * 100;
+            }
+            document.querySelector('#sakinah-hasil .hasil-value').innerHTML = formatNumber(hasil) + '<span class="hasil-satuan">%</span>';
+            updateColor('sakinah-hasil', hasil);
+        }
+
+        function resetSakinah() {
+            document.getElementById('sakinah-a').value = '';
+            document.getElementById('sakinah-b').value = '';
+            hitungSakinah();
+        }
+
+        // 3. BRUS
+        function hitungBrus() {
+            const a = parseFloat(document.getElementById('brus-a').value) || 0;
+            const b = parseFloat(document.getElementById('brus-b').value) || 0;
+            let hasil = 0;
+            if (b > 0) {
+                hasil = (a / b) * 100;
+            }
+            document.querySelector('#brus-hasil .hasil-value').innerHTML = formatNumber(hasil) + '<span class="hasil-satuan">%</span>';
+            updateColor('brus-hasil', hasil);
+        }
+
+        function resetBrus() {
+            document.getElementById('brus-a').value = '';
+            document.getElementById('brus-b').value = '';
+            hitungBrus();
+        }
+
+        // 4. Penghulu
+        function hitungPenghulu() {
+            const a = parseFloat(document.getElementById('penghulu-a').value) || 0;
+            const b = parseFloat(document.getElementById('penghulu-b').value) || 0;
+            let hasil = 0;
+            if (b > 0) {
+                hasil = (a / b) * 100;
+            }
+            document.querySelector('#penghulu-hasil .hasil-value').innerHTML = formatNumber(hasil) + '<span class="hasil-satuan">%</span>';
+            updateColor('penghulu-hasil', hasil);
+        }
+
+        function resetPenghulu() {
+            document.getElementById('penghulu-a').value = '';
+            document.getElementById('penghulu-b').value = '';
+            hitungPenghulu();
+        }
+
+        // 5. Wakaf
+        function hitungWakaf() {
+            const a = parseFloat(document.getElementById('wakaf-a').value) || 0;
+            const b = parseFloat(document.getElementById('wakaf-b').value) || 0;
+            let hasil = 0;
+            if (b > 0) {
+                hasil = (a / b) * 100;
+            }
+            document.querySelector('#wakaf-hasil .hasil-value').innerHTML = formatNumber(hasil) + '<span class="hasil-satuan">%</span>';
+            updateColor('wakaf-hasil', hasil);
+        }
+
+        function resetWakaf() {
+            document.getElementById('wakaf-a').value = '';
+            document.getElementById('wakaf-b').value = '';
+            hitungWakaf();
+        }
+
+        // 6. Peristiwa Nikah (Rumus Khusus)
+        function hitungNikah() {
+            const a = parseFloat(document.getElementById('nikah-a').value) || 0;
+            const b = parseFloat(document.getElementById('nikah-b').value) || 0;
+            let hasil = 0;
+            if (b > 0) {
+                hasil = ((a - b) / b) * 100;
+            }
+            document.querySelector('#nikah-hasil .hasil-value').innerHTML = formatNumber(hasil) + '<span class="hasil-satuan">%</span>';
+            
+            // Warna khusus untuk pertumbuhan (bisa negatif)
+            const box = document.getElementById('nikah-hasil');
+            if (hasil > 0) {
+                box.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)'; // Hijau (naik)
+            } else if (hasil < 0) {
+                box.style.background = 'linear-gradient(135deg, #eb3349 0%, #f45c43 100%)'; // Merah (turun)
+            } else {
+                box.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'; // Netral
+            }
+        }
+
+        function resetNikah() {
+            document.getElementById('nikah-a').value = '';
+            document.getElementById('nikah-b').value = '';
+            hitungNikah();
+        }
+
+        // 7. Penyuluh
+        function hitungPenyuluh() {
+            const a = parseFloat(document.getElementById('penyuluh-a').value) || 0;
+            const b = parseFloat(document.getElementById('penyuluh-b').value) || 0;
+            let hasil = 0;
+            if (b > 0) {
+                hasil = (a / b) * 100;
+            }
+            document.querySelector('#penyuluh-hasil .hasil-value').innerHTML = formatNumber(hasil) + '<span class="hasil-satuan">%</span>';
+            updateColor('penyuluh-hasil', hasil);
+        }
+
+        function resetPenyuluh() {
+            document.getElementById('penyuluh-a').value = '';
+            document.getElementById('penyuluh-b').value = '';
+            hitungPenyuluh();
+        }
+
+        // 8. Sarana
+        function hitungSarana() {
+            const a = parseFloat(document.getElementById('sarana-a').value) || 0;
+            const b = parseFloat(document.getElementById('sarana-b').value) || 0;
+            let hasil = 0;
+            if (b > 0) {
+                hasil = (a / b) * 100;
+            }
+            document.querySelector('#sarana-hasil .hasil-value').innerHTML = formatNumber(hasil) + '<span class="hasil-satuan">%</span>';
+            updateColor('sarana-hasil', hasil);
+        }
+
+        function resetSarana() {
+            document.getElementById('sarana-a').value = '';
+            document.getElementById('sarana-b').value = '';
+            hitungSarana();
+        }
+
+        // Fungsi update warna berdasarkan nilai
+        function updateColor(elementId, nilai) {
+            const box = document.getElementById(elementId);
+            if (nilai >= 80) {
+                box.style.background = 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)'; // Hijau - Sangat Baik
+            } else if (nilai >= 60) {
+                box.style.background = 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'; // Biru - Baik
+            } else if (nilai >= 40) {
+                box.style.background = 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'; // Kuning - Cukup
+            } else if (nilai > 0) {
+                box.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'; // Pink - Perlu Perbaikan
+            } else {
+                box.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'; // Default
+            }
+        }
+    </script>
+</body>
+</html>
