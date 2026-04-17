@@ -698,13 +698,13 @@
         // 9. KUA
         function hitungKUA() {
             const a = parseFloat(document.getElementById('KUA-a').value) || 0;
-            const b = parseFloat(document.getElementById('sKUA-b').value) || 0;
+            const b = parseFloat(document.getElementById('KUA-b').value) || 0;
             let hasil = 0;
             if (b > 0) {
                 hasil = (a / b) * 100;
             }
             document.querySelector('#KUA-hasil .hasil-value').innerHTML = formatNumber(hasil) + '<span class="hasil-satuan">%</span>';
-            updateColor('sarana-hasil', hasil);
+            updateColor('KUA-hasil', hasil);
         }
 
         function resetSarana() {
